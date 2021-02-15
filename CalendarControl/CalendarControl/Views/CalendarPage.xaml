@@ -1,9 +1,89 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="CalendarControl.Views.CalendarPage"
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:CalendarControl.Converters"
+             x:Class="CalendarControl.Views.CalendarPage"
              Background="{AppThemeBinding Dark=Black, Light=White}">
+<ContentPage.Resources>
+    <!--This is the list of styles that are defined for each type used in the control-->
+    <Style TargetType="Grid" x:Key="EmptyStyle">
+        <Setter Property="VisualStateManager.VisualStateGroups">
+            <VisualStateGroupList>
+                <VisualStateGroup x:Name="CommonStates">
+                    <VisualState x:Name="Normal">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Dark=Black, Light=White}" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Selected">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Dark=Black, Light=White}" />
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateGroupList>
+        </Setter>
+    </Style>
+    <Style TargetType="Grid" x:Key="SelectedStyle" BasedOn="{StaticResource EmptyStyle}">
+        <Setter Property="VisualStateManager.VisualStateGroups">
+            <VisualStateGroupList>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal">
+                            <VisualState.Setters>
+                                <Setter Property="BackgroundColor" Value="Green" />
+                            </VisualState.Setters>
+                        </VisualState>
+                </VisualStateGroup>
+            </VisualStateGroupList>
+        </Setter>
+    </Style>
+    <Style TargetType="Grid" x:Key="TodayStyle" BasedOn="{StaticResource EmptyStyle}">
+        <Setter Property="VisualStateManager.VisualStateGroups">
+            <VisualStateGroupList>
+                <VisualStateGroup x:Name="CommonStates">
+                    <VisualState x:Name="Normal">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="Fuschia" />
+                        </VisualState.Setters>
+                        </VisualState>
+                </VisualStateGroup>
+            </VisualStateGroupList>
+        </Setter>
+    </Style>
+    <!--This is setting up the converter to use the styles above-->
+    <local:CalendarItemStyleConverter x:Key="CalendarItemStyleConverter"
+        DayStyle="{StaticResource EmptyStyle}"
+        EmptyStyle="{StaticResource EmptyStyle}"
+        SelectedStyle="{StaticResource SelectedStyle}"
+        TodayStyle="{StaticResource TodayStyle}"
+        HeaderStyle="{StaticResource EmptyStyle}"/>
+    </ContentPage.Resources>
     <ContentPage.Content>
         <StackLayout>
-            <Label Text="Hello World!" />
+            <!--Set up the top row with the buttons to change the month and label show the current month-->
+            <Grid ColumnDefinitions="50,*,50">
+                <Button Text="Prev" Grid.Column="0" Command="{Binding PreviousMonth}"></Button>
+                <Label Text="{Binding MonthText}" Grid.Column="1" HorizontalTextAlignment="Center"></Label>
+                <Button Text="Next" Grid.Column="2" Command="{Binding NextMonth}"></Button>
+            </Grid>
+            <!--This is the collection view that is the main view for the control, it is setup to be a vertical grid with 7 columns-->
+            <CollectionView x:Name="LayoutRoot"
+                            SelectionMode="Single"
+                            ItemsSource="{Binding Items}"
+                            ItemsLayout="VerticalGrid, 7"
+                            SelectedItem="{Binding SelectedItem}"
+                            SelectionChangedCommand="{Binding SelectedItemChangedCommand}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <!--The Style is bound the item type using the converter above to convert it to a converter-->
+                        <Grid Style="{Binding Type, Converter={StaticResource CalendarItemStyleConverter}}">
+                            <Label Text="{Binding Label}"></Label>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            <!--This is just here to show how you can use the selected date when it is selected from the control above-->
+            <Label Text="{Binding SelectedDate.Date, StringFormat='{0:dd MMMM yyyy}'}" HorizontalOptions="Center"/>
         </StackLayout>
+      
     </ContentPage.Content>
 </ContentPage>

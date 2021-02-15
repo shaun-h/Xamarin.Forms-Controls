@@ -5,12 +5,12 @@ using Xamarin.Forms;
 
 namespace CalendarControl.Views
 {
-    public partial class CalendarPage : ContentPage
+    public partial class LicensesPage : ContentPage
     {
-        public CalendarPage()
+        public LicensesPage()
         {
             InitializeComponent();
-            BindingContext = new CalendarViewModel();
+            BindingContext = new LicensesViewModel();
         }
     }
 }

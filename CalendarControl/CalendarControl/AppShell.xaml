@@ -34,4 +34,9 @@
             <ShellContent ContentTemplate="{DataTemplate local:CalendarPage}" />
         </Tab>
     </FlyoutItem>
+        <FlyoutItem Title="Licenses" Icon="icon_feed.png">
+        <Tab>
+            <ShellContent ContentTemplate="{DataTemplate local:LicensesPage}" />
+        </Tab>
+    </FlyoutItem>
 </Shell>
